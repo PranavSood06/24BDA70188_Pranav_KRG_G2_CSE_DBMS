@@ -1,114 +1,83 @@
-📚 Library Management System – Database Design
-📌 Aim
+# Library Management System Database
+
+## Aim
 
 To design and implement a Library Management System database using appropriate tables, primary keys, foreign keys, and constraints, and to perform DML operations along with DCL commands such as role creation, privilege granting, and revoking to ensure database security.
 
-🛠️ Technologies Used
+## Overview
 
-Database: PostgreSQL / SQL-compliant RDBMS
+This project demonstrates the creation and management of a relational database for a library system. It includes:
 
-Language: SQL
+* Book management
+* Library visitor (user) management
+* Book issue tracking
+* Role-based access control using SQL DCL commands
 
-🗂️ Database Schema Overview
+The database is designed with data integrity, normalization, and security in mind.
 
-The system consists of the following tables:
+## Database Schema
 
-BOOKS
+### 1. BOOKS Table
 
-LIBRARY_VISITOR_USER
+Stores information about books available in the library.
 
-BOOK_ISSUE
+**Columns:**
 
-Additionally, roles and privileges are managed using SQL DCL commands.
+* `ID` (INT, PRIMARY KEY)
+* `NAME` (VARCHAR(20), NOT NULL)
+* `AUTHOR_NAME` (VARCHAR(20), NOT NULL)
+* `COUNT` (INT, CHECK COUNT >= 1)
 
-📘 Table Descriptions
-1️⃣ BOOKS Table
+### 2. LIBRARY_VISITOR_USER Table
 
-Stores details of books available in the library.
+Stores details of users who visit the library.
 
-Column Name	Data Type	Constraints
-ID	INT	Primary Key
-NAME	VARCHAR(20)	NOT NULL
-AUTHOR_NAME	VARCHAR(20)	NOT NULL
-COUNT	INT	CHECK (COUNT ≥ 1)
+**Columns:**
 
-✔ Ensures that at least one copy of a book exists.
+* `USER_ID` (INT, PRIMARY KEY)
+* `USER_NAME` (VARCHAR(20))
+* `AGE` (INT, NOT NULL, CHECK AGE >= 17)
+* `EMAIL` (VARCHAR(30), UNIQUE)
 
-2️⃣ LIBRARY_VISITOR_USER Table
+### 3. BOOK_ISSUE Table
 
-Stores information about users visiting the library.
+Tracks the books issued to users.
 
-Column Name	Data Type	Constraints
-USER_ID	INT	Primary Key
-USER_NAME	VARCHAR(20)	—
-AGE	INT	NOT NULL, CHECK (AGE ≥ 17)
-EMAIL	VARCHAR(30)	UNIQUE
+**Columns:**
 
-✔ Ensures only users aged 17 or above can register.
-✔ Prevents duplicate email registrations.
+* `BOOK_ISSUE_ID` (INT, PRIMARY KEY)
+* `BOOK_ID` (INT, FOREIGN KEY REFERENCES BOOKS(ID))
+* `USER_ID` (INT, FOREIGN KEY REFERENCES LIBRARY_VISITOR_USER(USER_ID))
+* `BOOK_ISSUE` (DATE, NOT NULL)
 
-3️⃣ BOOK_ISSUE Table
+## SQL Operations Performed
 
-Tracks books issued to users.
+### DDL (Data Definition Language)
 
-Column Name	Data Type	Constraints
-BOOK_ISSUE_ID	INT	Primary Key
-BOOK_ID	INT	Foreign Key → BOOKS(ID)
-USER_ID	INT	Foreign Key → LIBRARY_VISITOR_USER(USER_ID)
-BOOK_ISSUE	DATE	NOT NULL
+* Created tables with primary keys and foreign keys
+* Added and dropped columns using `ALTER TABLE`
+* Applied constraints such as `NOT NULL`, `UNIQUE`, and `CHECK`
 
-✔ Maintains referential integrity between books and users.
+### DML (Data Manipulation Language)
 
-🔗 Relationships
+* Inserted records into tables
+* Updated existing records
+* Retrieved data using `SELECT`
 
-One Book can be issued multiple times.
+### DCL (Data Control Language)
 
-One User can issue multiple books.
+* Created a role `LIBRARIAN_1`
+* Granted SELECT, INSERT, UPDATE, and DELETE privileges on tables
+* Revoked privileges from the role to demonstrate access control
 
-Foreign keys ensure valid book and user references.
+## Role and Security Management
 
-✏️ DML Operations Performed
+* A librarian role was created with login capability
+* Permissions were granted on selected tables
+* Permissions were revoked to ensure controlled access
 
-INSERT – Add new books, users, and issue records
+## Conclusion
 
-UPDATE – Modify book counts and user email details
+This project provides a foundational implementation of a Library Management System database using SQL. It showcases effective database design, data integrity through constraints, and secure access management using roles and privileges.
 
-SELECT – Retrieve data from tables
-
-🔐 DCL (Data Control Language)
-👤 Role Creation
-
-A librarian role is created to manage library data:
-
-CREATE ROLE LIBRARIAN_1
-WITH LOGIN PASSWORD 'password123';
-
-✅ Granting Privileges
-
-The librarian is granted permissions to manage data:
-
-GRANT SELECT, INSERT, DELETE, UPDATE ON BOOKS TO LIBRARIAN_1;
-GRANT SELECT, INSERT, DELETE, UPDATE ON BOOK_ISSUE TO LIBRARIAN_1;
-GRANT SELECT, INSERT, DELETE, UPDATE ON LIBRARY_VISITOR_USER TO LIBRARIAN_1;
-
-❌ Revoking Privileges
-
-Access can be restricted when required:
-
-REVOKE SELECT, INSERT, DELETE, UPDATE ON BOOKS FROM LIBRARIAN_1;
-
-🎯 Key Features
-
-Strong data integrity using constraints
-
-Proper normalization
-
-Secure access through roles and privileges
-
-Efficient tracking of book issues
-
-Scalable database design
-
-📌 Conclusion
-
-This project demonstrates a well-structured Library Management System database with effective use of DDL, DML, and DCL commands. It ensures data accuracy, security, and maintainability, making it suitable for real-world library applications.
+It can be extended further by adding return tracking, fine management, and advanced user roles.
